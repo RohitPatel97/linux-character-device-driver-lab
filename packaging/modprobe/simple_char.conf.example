@@ -1,0 +1,3 @@
+# Safe defaults: hardware hooks are off until explicitly enabled.
+options simple_char buffer_size=4096 enable_gpio=0 enable_i2c=0
+

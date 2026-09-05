@@ -1,0 +1,30 @@
+Observed host test transcript excerpt
+Date: 2026-09-04
+Platform: Windows
+Runtime: bundled CPython
+Source: local working tree before publication
+Command: python -m unittest discover -s tests -v
+
+test_capacity_error_preserves_committed_prefix ... ok
+test_close_failure_invalidates_descriptor ... ok
+test_closed_client_rejects_even_empty_io ... ok
+test_first_write_failure_remains_original_errno ... ok
+test_invalid_offsets_and_counts_fail_before_io ... ok
+test_nested_context_does_not_leak_another_descriptor ... ok
+test_read_combines_short_reads_and_stops_at_eof ... ok
+test_read_error_is_not_reported_as_successful_eof ... ok
+test_shared_descriptor_writers_keep_their_offsets ... ok
+test_short_writes_advance_explicit_offset_and_payload ... ok
+test_zero_length_io_performs_no_syscalls ... ok
+test_zero_write_after_progress_preserves_prefix ... ok
+test_zero_write_fails_without_spinning ... ok
+
+The 19 existing model, Python ABI, and source-contract cases also passed.
+
+----------------------------------------------------------------------
+Ran 32 tests in 0.006s
+
+OK
+
+Not executed: kernel compilation, module loading, eight Linux device
+integration cases, lifecycle scripts, GPIO hardware, or I2C hardware.

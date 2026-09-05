@@ -1,0 +1,3 @@
+# Limit access to a dedicated group while allowing the active local session.
+SUBSYSTEM=="simple_char", KERNEL=="simple_char", MODE="0660", GROUP="simplechar", TAG+="uaccess"
+

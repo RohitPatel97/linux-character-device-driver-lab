@@ -1,0 +1,21 @@
+simple_char host-only verification
+Date: 2026-08-26
+Platform: Microsoft Windows 11 Home 10.0.26200 (build 26200)
+Runtime: CPython 3.12.13, bundled Codex workspace runtime
+Scope: user-space model, Python UAPI encoding, and source contracts
+
+Command:
+  python -m unittest discover -s tests -v
+
+Result:
+  Ran 19 tests in 0.007s
+  OK
+
+Additional syntax check:
+  python -m compileall -q tests user
+  exit status 0
+
+Boundary note:
+  No Linux kernel module was built or loaded by this test. No Raspberry Pi,
+  GPIO, or I2C hardware was used. Kernel compilation is delegated to the
+  repository's Ubuntu GitHub Actions job and must be recorded after it runs.
