@@ -43,7 +43,10 @@ class ShellCheckerTests(unittest.TestCase):
         # A private PATH guarantees the fallback is exercised even on CI hosts
         # with ShellCheck installed. All fixture scripts use the real Bash.
         (self.commands / "bash").symlink_to(self.bash)
-        self.write_command("dirname", 'printf "%s\\n" "${1%/*}"\n')
+        self.write_command(
+            "dirname",
+            'if [[ "${1:-}" == -- ]]; then shift; fi\nprintf "%s\\n" "${1%/*}"\n',
+        )
         paths = " ".join(shlex.quote(str(path)) for path in self.ordered_scripts)
         self.write_command("find", f"printf '%s\\0' {paths}\n")
         self.environment = os.environ.copy()
