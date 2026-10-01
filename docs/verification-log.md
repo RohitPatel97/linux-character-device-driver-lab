@@ -1,8 +1,10 @@
 # Verification log
 
-This file is intentionally an evidence template. The repository does not claim
-Linux module-load or Raspberry Pi hardware validation until an actual result is
-entered below.
+This file records observed verification results and retains templates for
+validation that has not been performed. The repository does not claim Linux
+module-load or Raspberry Pi hardware validation until an actual result is
+entered below. Host tests, mocked syscalls, compilation, and physical validation
+are separate evidence categories.
 
 ## Host-only tests
 
@@ -24,7 +26,25 @@ against a loaded module. WSL reported that Windows Subsystem for Linux is not
 installed; no Linux distro, matching headers, or test device was available.
 The Windows result does not establish kernel compilation, Linux runtime
 correctness, or GPIO/I2C electrical behavior. The kernel stats-lock change
-requires the configured CI compile and the opt-in Linux integration run.
+subsequently compiled in the successful CI run below; its loaded-module
+behavior still requires the opt-in Linux integration run.
+
+### 2026-09-04 published CI host checks
+
+| Field | Value |
+|---|---|
+| Date | 2026-09-04 America/Los_Angeles; CI logs dated 2026-09-05 UTC |
+| Published commit | `721e08928ce16ff4dca6a7b16c50957bb57e443b` |
+| Runner | GitHub Actions, Ubuntu 24.04 |
+| Command | `make check` |
+| Observed result | PASS — host-checks job succeeded; 32 Python host tests passed in 0.007 seconds, C client compiled, and configured shell checks passed |
+| Evidence | [GitHub Actions run 33936329861](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/33936329861) |
+
+These tests exercise the reference model, UAPI encoding, source contracts, and
+actual Python client logic with injected syscall responses. They do not execute
+the kernel module or inject faults into actual kernel user-copy operations.
+The historical shell-check result records the checks as implemented at that
+commit; it does not establish that every script received a Bash syntax check.
 
 ### Earlier baseline record
 
@@ -41,13 +61,22 @@ requires the configured CI compile and the opt-in Linux integration run.
 
 | Field | Value |
 |---|---|
-| Date | _not recorded_ |
-| Commit | _not recorded_ |
-| Distribution/kernel headers | _not recorded_ |
-| Compiler | _not recorded_ |
-| Command | `make module KDIR=...` |
-| Result | _not recorded_ |
-| `modinfo`/CI link | _not recorded_ |
+| Date | 2026-09-04 America/Los_Angeles; CI logs dated 2026-09-05 UTC |
+| Published commit | `721e08928ce16ff4dca6a7b16c50957bb57e443b` |
+| Runner | GitHub Actions, Ubuntu 24.04 |
+| Kernel headers | `/usr/src/linux-headers-6.8.0-139-generic` |
+| Compiler | `gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0` |
+| Commands | `make module KDIR=/usr/src/linux-headers-6.8.0-139-generic`; `modinfo kernel/simple_char.ko` |
+| Observed result | PASS — module compilation and `modinfo` succeeded; both CI jobs passed |
+| `modinfo` vermagic | `6.8.0-139-generic SMP preempt mod_unload modversions` |
+| Evidence | [GitHub Actions run 33936329861](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/33936329861) |
+
+The build emitted a compiler-name warning: the module used `gcc-13`, whereas
+the kernel compiler was named `x86_64-linux-gnu-gcc-13`. Both reported the
+identical version above. This records successful compilation against that
+specific header tree, not a loaded-module test or validation across the full
+intended kernel-version range. The GitHub-hosted CI jobs did not load the
+module, run the eight device integration cases, or validate GPIO/I2C hardware.
 
 ## Linux VM load/unload
 

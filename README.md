@@ -1,5 +1,7 @@
 # Linux Character Device Driver
 
+[![CI](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/workflows/ci.yml)
+
 A compact, reviewable Linux loadable kernel module that exposes
 `/dev/simple_char`. It demonstrates character-device
 fundamentals: dynamic device-number allocation, bounded positional I/O,
@@ -14,11 +16,38 @@ reference model, and CI that builds against Ubuntu kernel headers.
 See [`WORKFLOW.md`](WORKFLOW.md) for completed work, recorded verification,
 and the next three tasks.
 
-> Verification boundary: the host-only Python suite can run on any development
-> machine and the GitHub Actions workflow is configured to compile the module on
-> Ubuntu. This repository does **not** claim that the module has been loaded in a
-> real Linux kernel or validated on Raspberry Pi GPIO/I2C hardware. Follow the
-> hardware bring-up checklist and retain its logs before making either claim.
+> Verified baseline: **32 passing host tests**, a C client build, ShellCheck,
+> and kernel-module compilation plus `modinfo` in
+> [GitHub Actions](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/33936329861)
+> at commit `721e089`. That build used Ubuntu 24.04 and Linux
+> `6.8.0-139-generic` headers. Module loading and Raspberry Pi GPIO/I2C hardware
+> validation remain **pending**; the eight real-device cases are authored but
+> unrun. See the [verification log](docs/verification-log.md) for exact evidence.
+
+## Try the checks without loading a module
+
+Clone the repository and run the portable Python suite on Windows, macOS, or
+Linux (Python 3.11+):
+
+```bash
+git clone https://github.com/RohitPatel97/linux-character-device-driver-lab.git
+cd linux-character-device-driver-lab
+python3 -m unittest discover -s tests -v
+```
+
+On Windows, use `python` or `py -3` if `python3` is unavailable. For the full
+unprivileged checks on Debian/Ubuntu:
+
+```bash
+sudo apt-get install build-essential python3 shellcheck
+make check
+```
+
+`make check` builds the C client, runs the portable suite, compares a compiled
+C UAPI probe with the Python client, and checks the shell scripts and checker
+regressions. It needs no kernel headers, device node, or module load. The C ABI
+comparison targets Linux architectures using asm-generic ioctl encoding,
+including x86_64 and arm64.
 
 ## Why this is useful
 
@@ -61,8 +90,7 @@ The in-kernel buffer is one shared device resource. Each open file has its own
 file position. A single interruptible mutex covers buffer contents, logical
 length, and hardware operations; related I/O counters are sampled under that
 same lock. Open/close counts and `last_error` are independently sampled
-diagnostics. The
-module owner recorded in `file_operations` prevents removal while a file is
+diagnostics. The module owner recorded in `file_operations` prevents removal while a file is
 open.
 
 ## Repository layout
@@ -86,7 +114,7 @@ open.
 │   ├── setup-udev.sh
 │   ├── smoke-test.sh
 │   └── unload.sh
-├── tests/                            Unprivileged reference-model/ABI tests
+├── tests/                            Model, client, native ABI, and shell tests
 ├── user/
 │   ├── simple_char_cli.c             Native client
 │   └── simple_char_client.py         Standard-library Python client
@@ -336,6 +364,25 @@ python3 -m unittest discover -s tests -v
 make check
 ```
 
+| Command | Coverage | Requirements |
+|---|---|---|
+| `python3 -m unittest discover -s tests -v` | 32 model, Python ABI, client syscall, and source-contract cases | Python 3.11+; portable |
+| `make check-abi` | Five comparisons against the compiled C header: sizes, ioctl numbers, stats decoding, GPIO and I2C wire layouts | Linux C compiler, userspace Linux headers, Python |
+| `make check-shell` | Syntax-check every script, run ShellCheck when installed, and run three checker regressions | Bash, standard Unix tools, Python; CI installs ShellCheck |
+| `make check` | All checks above plus the native C client build | Linux development tools; no kernel headers |
+
+The native ABI probe in [`tests/abi_probe.c`](tests/abi_probe.c) includes the
+same UAPI header as the driver and C client. Python compares the actual C ioctl
+values and serialized request/statistics payloads, including distinct 64-bit
+counters and a negative errno. This catches header/client drift that separate
+hard-coded Python expectations can miss. It verifies the build host's ABI;
+it does not establish 32-bit compatibility on a 64-bit kernel.
+
+The shell regressions run in temporary directories without root or a device.
+They reproduce the old one-file-only syntax check, reject a malformed later
+script, exercise filenames containing spaces and the no-ShellCheck fallback,
+and verify that ShellCheck failures reach the caller.
+
 The deterministic model covers boundary behavior, EOF, zero-length operations,
 clear permissions, disabled/privileged hardware paths, counters, and concurrent
 non-torn writes. ABI tests validate struct sizes and ioctl encodings. Source
@@ -360,6 +407,8 @@ for running the kernel module.
 | Nested context entry can leak an open descriptor | Reject entry while already open; invalidate descriptor before close | `test_nested_context_does_not_leak_another_descriptor` and `test_close_failure_invalidates_descriptor` |
 | Stats sampled before acquiring the lock can mix I/O totals from different operations | Capture I/O totals and logical size within the device mutex | Linux integration `test_stats_totals_are_coherent_during_writes`: bytes written equal 8 times operations during fixed-width writes; **not yet run** |
 | Source-contract test still expected an obsolete cleanup label | Align the check and lifecycle diagram with publication after device-node creation | `test_cleanup_labels_are_reverse_ordered`: current failure labels appear in reverse acquisition order |
+| One `bash -n` call with several filenames checks only the first script | Invoke Bash separately for every discovered script | Shell checker regression: a malformed later script fails even without ShellCheck |
+| Independent Python ABI constants can pass tests after the C header changes | Compile the shared C header and compare actual command values and wire payloads | `make check-abi`: five native C/Python comparisons |
 
 See [`tests/test_client_io.py`](tests/test_client_io.py) for host regression
 cases and [`docs/verification-log.md`](docs/verification-log.md) for the exact
@@ -395,7 +444,7 @@ module itself, inject faulting user pages, or validate physical hardware.
 | Capacity boundary | Host model | Short write, then `ENOSPC` |
 | Disabled hardware | Host model | `EOPNOTSUPP` |
 | Missing raw-I/O privilege | Host model | `EPERM` |
-| UAPI size/ioctl values | ABI tests | 72-byte stats and asm-generic commands |
+| UAPI size/ioctl values and field layout | Python tests + compiled C probe | 72-byte stats, matching commands, and matching wire payloads |
 | C warnings + script lint | GitHub Actions | Clean client compile and ShellCheck |
 | Kernel API compatibility | GitHub Actions | `.ko` compiles against Ubuntu generic headers |
 | Invalid module parameter | Linux test host | `insmod` fails; no class/node remains |
@@ -414,8 +463,8 @@ Record commands, kernel version, commit, results, and logs in
 
 `.github/workflows/ci.yml` has two unprivileged jobs:
 
-1. build the C client, run Python tests, parse every shell script, and run
-   ShellCheck;
+1. build the C client, run Python tests and native C/Python ABI comparisons,
+   parse every shell script, run ShellCheck, and test the shell checker;
 2. install Ubuntu generic headers, compile the out-of-tree module, and inspect
    its metadata with `modinfo`.
 

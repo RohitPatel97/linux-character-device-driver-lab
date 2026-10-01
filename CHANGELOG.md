@@ -8,6 +8,12 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- Shell syntax checking now invokes Bash once per file, so a malformed later
+  script cannot pass through the no-ShellCheck fallback.
+- `make check` now includes compiled C/Python UAPI comparisons and shell-checker
+  regressions. CI records host tool versions for reproducible evidence.
+- README includes a portable verification quick start, individual check targets,
+  and the previously published kernel-build evidence.
 - Python buffer I/O uses `pread`/`pwrite` so concurrent users of one descriptor
   do not race through a shared file position.
 - Kernel statistics capture related I/O totals and logical size while holding
@@ -19,6 +25,10 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- A C UAPI probe and five native ABI checks for sizes, ioctl values, statistics
+  decoding, and GPIO/I2C wire layouts; no loaded module is needed.
+- Three unprivileged shell-checker regressions for later-file syntax errors,
+  paths containing spaces, optional ShellCheck, and linter failure propagation.
 - `PartialWriteError` exposes committed-byte count, next offset, and original
   errno when an all-bytes write fails after partial progress.
 - Thirteen client regression tests with injected syscall failures, short I/O,
