@@ -1,0 +1,42 @@
+Date: 2026-10-01 (America/Los_Angeles)
+Platform/runtime: Windows / CPython 3.12.14
+Command: python -m unittest discover -s tests -v
+Scope: portable host tests; no kernel module, native C probe, or shell execution
+
+test_capacity_error_preserves_committed_prefix (test_client_io.ClientIoTests.test_capacity_error_preserves_committed_prefix) ... ok
+test_close_failure_invalidates_descriptor (test_client_io.ClientIoTests.test_close_failure_invalidates_descriptor) ... ok
+test_closed_client_rejects_even_empty_io (test_client_io.ClientIoTests.test_closed_client_rejects_even_empty_io) ... ok
+test_first_write_failure_remains_original_errno (test_client_io.ClientIoTests.test_first_write_failure_remains_original_errno) ... ok
+test_invalid_offsets_and_counts_fail_before_io (test_client_io.ClientIoTests.test_invalid_offsets_and_counts_fail_before_io) ... ok
+test_nested_context_does_not_leak_another_descriptor (test_client_io.ClientIoTests.test_nested_context_does_not_leak_another_descriptor) ... ok
+test_read_combines_short_reads_and_stops_at_eof (test_client_io.ClientIoTests.test_read_combines_short_reads_and_stops_at_eof) ... ok
+test_read_error_is_not_reported_as_successful_eof (test_client_io.ClientIoTests.test_read_error_is_not_reported_as_successful_eof) ... ok
+test_shared_descriptor_writers_keep_their_offsets (test_client_io.ClientIoTests.test_shared_descriptor_writers_keep_their_offsets) ... ok
+test_short_writes_advance_explicit_offset_and_payload (test_client_io.ClientIoTests.test_short_writes_advance_explicit_offset_and_payload) ... ok
+test_zero_length_io_performs_no_syscalls (test_client_io.ClientIoTests.test_zero_length_io_performs_no_syscalls) ... ok
+test_zero_write_after_progress_preserves_prefix (test_client_io.ClientIoTests.test_zero_write_after_progress_preserves_prefix) ... ok
+test_zero_write_fails_without_spinning (test_client_io.ClientIoTests.test_zero_write_fails_without_spinning) ... ok
+test_bounded_short_write_then_enospc (test_model.DeviceModelTests.test_bounded_short_write_then_enospc) ... ok
+test_clear_requires_writable_handle (test_model.DeviceModelTests.test_clear_requires_writable_handle) ... ok
+test_disabled_hardware_is_safe_by_default (test_model.DeviceModelTests.test_disabled_hardware_is_safe_by_default) ... ok
+test_hardware_hooks_require_raw_io_capability (test_model.DeviceModelTests.test_hardware_hooks_require_raw_io_capability) ... ok
+test_hardware_hooks_require_writable_handle (test_model.DeviceModelTests.test_hardware_hooks_require_writable_handle) ... ok
+test_mutex_prevents_torn_concurrent_writes (test_model.DeviceModelTests.test_mutex_prevents_torn_concurrent_writes) ... ok
+test_parameterized_hardware_model (test_model.DeviceModelTests.test_parameterized_hardware_model) ... ok
+test_roundtrip_and_counters (test_model.DeviceModelTests.test_roundtrip_and_counters) ... ok
+test_zero_length_operations_do_not_increment_counters (test_model.DeviceModelTests.test_zero_length_operations_do_not_increment_counters) ... ok
+test_byte_parser_supports_decimal_and_hex (test_python_client.PythonClientAbiTests.test_byte_parser_supports_decimal_and_hex) ... ok
+test_fixed_width_stats_layout (test_python_client.PythonClientAbiTests.test_fixed_width_stats_layout) ... ok
+test_ioctl_numbers_match_asm_generic_encoding (test_python_client.PythonClientAbiTests.test_ioctl_numbers_match_asm_generic_encoding) ... ok
+test_stats_decoder (test_python_client.PythonClientAbiTests.test_stats_decoder) ... ok
+test_character_device_lifecycle_is_complete (test_source_contracts.KernelSourceContractTests.test_character_device_lifecycle_is_complete) ... ok
+test_cleanup_labels_are_reverse_ordered (test_source_contracts.KernelSourceContractTests.test_cleanup_labels_are_reverse_ordered) ... ok
+test_hardware_defaults_are_opt_in (test_source_contracts.KernelSourceContractTests.test_hardware_defaults_are_opt_in) ... ok
+test_shared_state_is_mutex_protected (test_source_contracts.KernelSourceContractTests.test_shared_state_is_mutex_protected) ... ok
+test_uapi_uses_no_raw_pointers (test_source_contracts.KernelSourceContractTests.test_uapi_uses_no_raw_pointers) ... ok
+test_user_copies_use_kernel_helpers (test_source_contracts.KernelSourceContractTests.test_user_copies_use_kernel_helpers) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 0.013s
+
+OK

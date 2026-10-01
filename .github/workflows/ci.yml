@@ -14,7 +14,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install host build tools
         run: sudo apt-get update && sudo apt-get install -y build-essential shellcheck
-      - name: Build clients and run host-only tests
+      - name: Record host tool versions
+        run: |
+          cc --version
+          python3 --version
+          bash --version
+          shellcheck --version
+      - name: Build clients and run host, native ABI, and shell checks
         run: make check
 
   kernel-module-build:
