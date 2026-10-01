@@ -16,11 +16,12 @@ reference model, and CI that builds against Ubuntu kernel headers.
 See [`WORKFLOW.md`](WORKFLOW.md) for completed work, recorded verification,
 and the next three tasks.
 
-> Verified baseline: **32 passing host tests**, a C client build, ShellCheck,
-> and kernel-module compilation plus `modinfo` in
-> [GitHub Actions](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/33936329861)
-> at commit `721e089`. That build used Ubuntu 24.04 and Linux
-> `6.8.0-139-generic` headers. Module loading and Raspberry Pi GPIO/I2C hardware
+> Verified October 1, 2026: **40 passing checks** (32 portable host tests,
+> five native C/Python ABI checks, and three shell-checker regressions), a C
+> client build, ShellCheck, and kernel-module compilation plus `modinfo` in
+> [GitHub Actions](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/36889639768)
+> at commit `998a717`. That build used Ubuntu 24.04 and Linux
+> `6.8.0-146-generic` headers. Module loading and Raspberry Pi GPIO/I2C hardware
 > validation remain **pending**; the eight real-device cases are authored but
 > unrun. See the [verification log](docs/verification-log.md) for exact evidence.
 

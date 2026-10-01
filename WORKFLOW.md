@@ -25,12 +25,20 @@ results before updating resume claims.
   0.013 seconds on Windows. New Python runners compile successfully. The shell
   runner explicitly exits 2 when Bash is unavailable. See the
   [host transcript](docs/test-results/host-tests-2026-10-01.txt).
-- **Remaining limits:** new native ABI and shell execution await Linux CI at
-  this point in the record. WSL is still not installed locally. Loaded-module,
+- **Observed Linux result:** `make check` passed all 40 cases: 32 portable
+  tests, five compiled C/Python ABI comparisons, and three shell regressions.
+  C client compilation, script syntax checks, and ShellCheck passed. Kernel
+  compilation and `modinfo` passed with Ubuntu 24.04 headers
+  `6.8.0-146-generic`. The initial CI run caught a missing `--` option delimiter
+  handler in the test fixture's `dirname` shim; the fixture was corrected before
+  the successful run. See the [CI excerpt](docs/test-results/ci-checks-2026-10-01.txt).
+- **Remaining limits:** WSL is still not installed locally. Loaded-module,
   faulting-user-page, 32-bit compatibility, and physical GPIO/I2C validation
-  remain unperformed.
-- **Published commit and CI:** to be recorded after this update is pushed and
-  the Linux checks complete.
+  remain unperformed. Native ABI results cover the CI host's x86_64 ABI.
+- **Published implementation commit:**
+  [`998a71718660f46bfdca8de35761a45d60e8838e`](https://github.com/RohitPatel97/linux-character-device-driver-lab/commit/998a71718660f46bfdca8de35761a45d60e8838e).
+  Both jobs passed in
+  [CI run 36889639768](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/36889639768).
 
 ## Completed reliability update — 2026-09-04
 
@@ -89,7 +97,8 @@ header versions and the historical shell-checker's coverage limit.
 Supported now: C/Linux device-driver implementation, bounded I/O, mutex
 synchronization, fixed-width ioctl ABI, Python clients, injected client syscall
 failures, regression testing, concurrency tests, 32 passing portable host tests,
-and kernel compilation/metadata inspection in GitHub CI.
+five native C/Python ABI checks, three shell-checker regressions, and kernel
+compilation/metadata inspection in GitHub CI.
 
 Pending actual evidence: loaded-module integration, kernel user-copy fault
 injection, 32-bit compatibility execution, Raspberry Pi bring-up, GPIO signals,

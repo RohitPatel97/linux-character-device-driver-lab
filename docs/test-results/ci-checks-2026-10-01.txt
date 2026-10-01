@@ -1,0 +1,62 @@
+Date: 2026-10-01 (America/Los_Angeles)
+Published implementation commit: 998a71718660f46bfdca8de35761a45d60e8838e
+CI: https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/36889639768
+Observed conclusion: both jobs succeeded
+Excerpt: tool versions, test cases/totals, header/compiler and module metadata
+Scope: unprivileged host checks and kernel compilation; no module load or hardware test
+
+host-checks	Set up job	2026-10-01T16:07:52.7712078Z Image: ubuntu-24.04
+host-checks	Record host tool versions	2026-10-01T16:08:04.3774990Z cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+host-checks	Record host tool versions	2026-10-01T16:08:04.3788195Z Python 3.12.3
+host-checks	Record host tool versions	2026-10-01T16:08:04.3802451Z GNU bash, version 5.2.21(1)-release (x86_64-pc-linux-gnu)
+host-checks	Record host tool versions	2026-10-01T16:08:04.5701846Z version: 0.9.0
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2186298Z test_capacity_error_preserves_committed_prefix (test_client_io.ClientIoTests.test_capacity_error_preserves_committed_prefix) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2188646Z test_close_failure_invalidates_descriptor (test_client_io.ClientIoTests.test_close_failure_invalidates_descriptor) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2190877Z test_closed_client_rejects_even_empty_io (test_client_io.ClientIoTests.test_closed_client_rejects_even_empty_io) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2192504Z test_first_write_failure_remains_original_errno (test_client_io.ClientIoTests.test_first_write_failure_remains_original_errno) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2195531Z test_invalid_offsets_and_counts_fail_before_io (test_client_io.ClientIoTests.test_invalid_offsets_and_counts_fail_before_io) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2198195Z test_nested_context_does_not_leak_another_descriptor (test_client_io.ClientIoTests.test_nested_context_does_not_leak_another_descriptor) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2202217Z test_read_combines_short_reads_and_stops_at_eof (test_client_io.ClientIoTests.test_read_combines_short_reads_and_stops_at_eof) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2204684Z test_read_error_is_not_reported_as_successful_eof (test_client_io.ClientIoTests.test_read_error_is_not_reported_as_successful_eof) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2223232Z test_shared_descriptor_writers_keep_their_offsets (test_client_io.ClientIoTests.test_shared_descriptor_writers_keep_their_offsets) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2225637Z test_short_writes_advance_explicit_offset_and_payload (test_client_io.ClientIoTests.test_short_writes_advance_explicit_offset_and_payload) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2229460Z test_zero_length_io_performs_no_syscalls (test_client_io.ClientIoTests.test_zero_length_io_performs_no_syscalls) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2231728Z test_zero_write_after_progress_preserves_prefix (test_client_io.ClientIoTests.test_zero_write_after_progress_preserves_prefix) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2233758Z test_zero_write_fails_without_spinning (test_client_io.ClientIoTests.test_zero_write_fails_without_spinning) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2234839Z test_bounded_short_write_then_enospc (test_model.DeviceModelTests.test_bounded_short_write_then_enospc) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2235984Z test_clear_requires_writable_handle (test_model.DeviceModelTests.test_clear_requires_writable_handle) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2237143Z test_disabled_hardware_is_safe_by_default (test_model.DeviceModelTests.test_disabled_hardware_is_safe_by_default) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2238287Z test_hardware_hooks_require_raw_io_capability (test_model.DeviceModelTests.test_hardware_hooks_require_raw_io_capability) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2239582Z test_hardware_hooks_require_writable_handle (test_model.DeviceModelTests.test_hardware_hooks_require_writable_handle) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2251802Z test_mutex_prevents_torn_concurrent_writes (test_model.DeviceModelTests.test_mutex_prevents_torn_concurrent_writes) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2252926Z test_parameterized_hardware_model (test_model.DeviceModelTests.test_parameterized_hardware_model) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2253943Z test_roundtrip_and_counters (test_model.DeviceModelTests.test_roundtrip_and_counters) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2255582Z test_zero_length_operations_do_not_increment_counters (test_model.DeviceModelTests.test_zero_length_operations_do_not_increment_counters) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2257449Z test_byte_parser_supports_decimal_and_hex (test_python_client.PythonClientAbiTests.test_byte_parser_supports_decimal_and_hex) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2259254Z test_fixed_width_stats_layout (test_python_client.PythonClientAbiTests.test_fixed_width_stats_layout) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2260762Z test_ioctl_numbers_match_asm_generic_encoding (test_python_client.PythonClientAbiTests.test_ioctl_numbers_match_asm_generic_encoding) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2262148Z test_stats_decoder (test_python_client.PythonClientAbiTests.test_stats_decoder) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2263587Z test_character_device_lifecycle_is_complete (test_source_contracts.KernelSourceContractTests.test_character_device_lifecycle_is_complete) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2265186Z test_cleanup_labels_are_reverse_ordered (test_source_contracts.KernelSourceContractTests.test_cleanup_labels_are_reverse_ordered) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2266450Z test_hardware_defaults_are_opt_in (test_source_contracts.KernelSourceContractTests.test_hardware_defaults_are_opt_in) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2267553Z test_shared_state_is_mutex_protected (test_source_contracts.KernelSourceContractTests.test_shared_state_is_mutex_protected) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2268448Z test_uapi_uses_no_raw_pointers (test_source_contracts.KernelSourceContractTests.test_uapi_uses_no_raw_pointers) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2269667Z test_user_copies_use_kernel_helpers (test_source_contracts.KernelSourceContractTests.test_user_copies_use_kernel_helpers) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.2270671Z Ran 32 tests in 0.009s
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.3406128Z test_gpio_wire_layout_matches_c_header (__main__.NativeAbiTests.test_gpio_wire_layout_matches_c_header) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.3407611Z test_i2c_wire_layout_matches_c_header (__main__.NativeAbiTests.test_i2c_wire_layout_matches_c_header) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.3409146Z test_ioctl_numbers_match_c_header (__main__.NativeAbiTests.test_ioctl_numbers_match_c_header) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.3410614Z test_stats_wire_layout_and_decoder_match_c_header (__main__.NativeAbiTests.test_stats_wire_layout_and_decoder_match_c_header) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.3412049Z test_struct_sizes_match_c_header (__main__.NativeAbiTests.test_struct_sizes_match_c_header) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.3413269Z Ran 5 tests in 0.001s
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.6169836Z test_invalid_later_script_fails_without_shellcheck (__main__.ShellCheckerTests.test_invalid_later_script_fails_without_shellcheck) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.6276565Z test_shellcheck_receives_all_paths_and_failure_propagates (__main__.ShellCheckerTests.test_shellcheck_receives_all_paths_and_failure_propagates) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.6370901Z test_valid_scripts_with_spaces_pass_without_shellcheck (__main__.ShellCheckerTests.test_valid_scripts_with_spaces_pass_without_shellcheck) ... ok
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-01T16:08:06.6372725Z Ran 3 tests in 0.031s
+kernel-module-build	Set up job	2026-10-01T16:07:56.1617441Z Image: ubuntu-24.04
+kernel-module-build	Compile out-of-tree module	2026-10-01T16:08:15.5879807Z ##[group]Run make module KDIR="/usr/src/linux-headers-6.8.0-146-generic"
+kernel-module-build	Compile out-of-tree module	2026-10-01T16:08:15.5880366Z make module KDIR="/usr/src/linux-headers-6.8.0-146-generic"
+kernel-module-build	Compile out-of-tree module	2026-10-01T16:08:16.0851890Z warning: the compiler differs from the one used to build the kernel
+kernel-module-build	Compile out-of-tree module	2026-10-01T16:08:16.0852930Z   The kernel was built by: x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+kernel-module-build	Compile out-of-tree module	2026-10-01T16:08:16.0853643Z   You are using:           gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+kernel-module-build	Confirm module metadata	2026-10-01T16:08:17.7937357Z vermagic:       6.8.0-146-generic SMP preempt mod_unload modversions
