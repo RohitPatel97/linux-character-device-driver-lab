@@ -39,6 +39,7 @@ struct simple_char_device {
 	struct device *device;
 
 	char *buffer;
+	char *write_buffer;
 	size_t capacity;
 	size_t data_len;
 	struct mutex lock;
@@ -171,7 +172,6 @@ static ssize_t simple_char_write(struct file *file, const char __user *source,
 				 size_t count, loff_t *position)
 {
 	struct simple_char_device *dev = file->private_data;
-	char *temporary;
 	size_t available;
 	size_t requested;
 	size_t copied;
@@ -198,16 +198,12 @@ static ssize_t simple_char_write(struct file *file, const char __user *source,
 	available = dev->capacity - (size_t)*position;
 	requested = min(count, available);
 	/* copy_from_user zero-fills an uncopied tail; never do that to live data. */
-	temporary = kvmalloc(requested, GFP_KERNEL);
-	if (!temporary) {
-		error = -ENOMEM;
-		goto out_error;
-	}
-	not_copied = copy_from_user(temporary, source, requested);
+	/* The mutex also owns the preallocated staging buffer: no per-write allocation. */
+	not_copied = copy_from_user(dev->write_buffer, source, requested);
 	copied = requested - not_copied;
 
 	if (copied > 0) {
-		memcpy(dev->buffer + *position, temporary, copied);
+		memcpy(dev->buffer + *position, dev->write_buffer, copied);
 		*position += copied;
 		dev->data_len = max(dev->data_len, (size_t)*position);
 		atomic64_inc(&dev->write_ops);
@@ -219,8 +215,7 @@ static ssize_t simple_char_write(struct file *file, const char __user *source,
 	else if (requested < count)
 		atomic_set(&dev->last_error, -ENOSPC);
 
-	memzero_explicit(temporary, requested);
-	kvfree(temporary);
+	memzero_explicit(dev->write_buffer, requested);
 	mutex_unlock(&dev->lock);
 	return copied > 0 ? (ssize_t)copied : -EFAULT;
 
@@ -513,6 +508,11 @@ static int __init simple_char_init(void)
 		goto error_free_device;
 	}
 	dev->capacity = buffer_size;
+	dev->write_buffer = kvzalloc(buffer_size, GFP_KERNEL);
+	if (!dev->write_buffer) {
+		error = -ENOMEM;
+		goto error_free_buffer;
+	}
 	mutex_init(&dev->lock);
 	atomic_set(&dev->open_handles, 0);
 	atomic_set(&dev->last_error, 0);
@@ -524,7 +524,7 @@ static int __init simple_char_init(void)
 
 	error = simple_char_gpio_init(dev);
 	if (error)
-		goto error_free_buffer;
+		goto error_free_write_buffer;
 
 	error = simple_char_i2c_init(dev);
 	if (error)
@@ -578,6 +578,8 @@ error_cleanup_i2c:
 	simple_char_i2c_cleanup(dev);
 error_cleanup_gpio:
 	simple_char_gpio_cleanup(dev);
+error_free_write_buffer:
+	kvfree(dev->write_buffer);
 error_free_buffer:
 	kvfree(dev->buffer);
 error_free_device:
@@ -599,6 +601,8 @@ static void __exit simple_char_exit(void)
 	unregister_chrdev_region(dev->devt, 1);
 	simple_char_i2c_cleanup(dev);
 	simple_char_gpio_cleanup(dev);
+	memzero_explicit(dev->write_buffer, dev->capacity);
+	kvfree(dev->write_buffer);
 	memzero_explicit(dev->buffer, dev->capacity);
 	kvfree(dev->buffer);
 	kfree(dev);

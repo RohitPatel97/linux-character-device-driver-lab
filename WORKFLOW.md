@@ -5,6 +5,28 @@ This is the ongoing work record for the portfolio project described in
 [`README.md`](README.md). Record completed work with commands and observed
 results before updating resume claims.
 
+## Runtime completion and optimization — 2026-10-12
+
+- **Problem:** loaded-module and actual user-copy fault behavior had never been
+  exercised. Every write allocated and freed temporary memory while holding the
+  device mutex. Unload cleanup could remove a symlink to a character device.
+- **Solution:** reuse a mutex-protected staging buffer allocated at module load;
+  preserve symlinks during unload; add a disposable QEMU Linux guest to CI with
+  matching kernel/image headers, no network or host filesystem mounts, and
+  retained console evidence. Avoid duplicate push/PR CI runs.
+- **Regression cases:** eight real-device integration cases, four protected-page
+  read/write fault cases, invalid-parameter cleanup, busy-device removal,
+  25 load/unload cycles, and unexpected-symlink preservation.
+- **Observed result so far:** 32 portable host tests passed locally; VM execution
+  and Linux compilation are pending the current CI run.
+- **Optimization tradeoff:** writes perform no heap allocation after module
+  initialization, in exchange for one additional capacity-sized buffer (4 KiB
+  by default, at most 1 MiB). No throughput improvement is claimed without a
+  benchmark.
+- **Remaining limits:** physical GPIO/I2C and 32-bit compatibility execution
+  require separate environments. Published commit and CI outcome will be
+  recorded after verification.
+
 ## Verification tooling update — 2026-10-01
 
 - **Problem:** `bash -n` was invoked with several filenames, so Bash parsed only

@@ -27,6 +27,7 @@ class KernelSourceContractTests(unittest.TestCase):
             "error_unregister_region:",
             "error_cleanup_i2c:",
             "error_cleanup_gpio:",
+            "error_free_write_buffer:",
             "error_free_buffer:",
             "error_free_device:",
         ]

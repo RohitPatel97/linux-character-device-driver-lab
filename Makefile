@@ -2,8 +2,9 @@ KDIR ?= /lib/modules/$(shell uname -r)/build
 PYTHON ?= python3
 MODULE_DIR := $(CURDIR)/kernel
 ABI_PROBE := build/abi-probe
+FAULT_TEST := build/user-copy-faults
 
-.PHONY: all module client test check check-abi check-shell clean help
+.PHONY: all module client test check check-abi check-shell fault-test check-vm clean help
 
 all: module client
 
@@ -32,7 +33,16 @@ check-shell:
 	bash ./scripts/check-shell.sh
 	$(PYTHON) -m tests.shell_checks
 
-check: client test check-abi check-shell
+$(FAULT_TEST): tests/user_copy_faults.c include/uapi/simple_char_ioctl.h
+	mkdir -p "$(@D)"
+	$(CC) $(CPPFLAGS) $(CFLAGS) -std=c11 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -Iinclude/uapi -o "$@" "$<"
+
+fault-test: $(FAULT_TEST)
+
+check-vm: all fault-test
+	bash scripts/test-vm.sh "$(KERNEL_IMAGE)"
+
+check: client test check-abi check-shell fault-test
 
 clean:
 	@if test -d "$(KDIR)"; then \
@@ -44,6 +54,7 @@ clean:
 	fi
 	$(MAKE) -C user clean
 	$(RM) "$(ABI_PROBE)"
+	$(RM) "$(FAULT_TEST)" build/test-initramfs.cpio.gz
 	find . -type d -name __pycache__ -prune -exec rm -rf {} +
 
 help:
@@ -54,4 +65,5 @@ help:
 	@echo "  check   Build the client and run all host-only checks"
 	@echo "  check-abi   Compare the compiled C UAPI with the Python client"
 	@echo "  check-shell Check every shell script and run checker regressions"
+	@echo "  check-vm Boot a disposable VM (set KDIR and KERNEL_IMAGE)"
 	@echo "  clean   Remove generated artifacts"

@@ -2,10 +2,15 @@ name: ci
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   host-checks:
@@ -24,11 +29,14 @@ jobs:
         run: make check
 
   kernel-module-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Install a supported kernel header tree
-        run: sudo apt-get update && sudo apt-get install -y build-essential kmod linux-headers-generic
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential kmod linux-headers-generic linux-image-generic qemu-system-x86 busybox-static cpio python3
       - name: Locate header tree
         id: headers
         shell: bash
@@ -40,3 +48,16 @@ jobs:
         run: make module KDIR="${{ steps.headers.outputs.kdir }}"
       - name: Confirm module metadata
         run: modinfo kernel/simple_char.ko
+      - name: Boot disposable VM and exercise the loaded driver
+        run: |
+          version="$(make -s -C '${{ steps.headers.outputs.kdir }}' kernelrelease)"
+          mkdir -p build
+          sudo install -m 644 "/boot/vmlinuz-${version}" build/vmlinuz
+          make check-vm KDIR="${{ steps.headers.outputs.kdir }}" KERNEL_IMAGE=build/vmlinuz
+      - name: Retain VM console evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vm-console
+          path: build/vm-console.log
+          if-no-files-found: ignore
