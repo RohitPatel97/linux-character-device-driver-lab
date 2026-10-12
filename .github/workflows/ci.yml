@@ -50,7 +50,7 @@ jobs:
         run: modinfo kernel/simple_char.ko
       - name: Boot disposable VM and exercise the loaded driver
         run: |
-          version="$(make -s -C '${{ steps.headers.outputs.kdir }}' kernelrelease)"
+          version="$(modinfo -F vermagic kernel/simple_char.ko | awk '{print $1}')"
           mkdir -p build
           sudo install -m 644 "/boot/vmlinuz-${version}" build/vmlinuz
           make check-vm KDIR="${{ steps.headers.outputs.kdir }}" KERNEL_IMAGE=build/vmlinuz
