@@ -48,8 +48,8 @@ All notable changes to this project are documented here. The format follows
   errno when an all-bytes write fails after partial progress.
 - Thirteen client regression tests with injected syscall failures, short I/O,
   EOF, descriptor lifecycle errors, and concurrent positional writes.
-- Eight explicitly opted-in real Linux device integration cases. These remain
-  unrun until a loaded-module test environment is available.
+- Eight explicitly opted-in real Linux device integration cases, now executed
+  in the recorded disposable QEMU guest.
 - A README problem/solution/test matrix and updated verification evidence.
 
 ### Planned

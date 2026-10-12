@@ -97,7 +97,7 @@ and native fault harness cover those operations separately.
 | C warnings + script lint | GitHub Actions | Clean client compile and ShellCheck |
 | Kernel API compatibility | GitHub Actions | `.ko` compiles against Ubuntu generic headers |
 | Invalid module parameter | Linux test host | `insmod` fails; no class/node remains |
-| Device busy during unload | Linux test host | `rmmod` returns `EBUSY`; module remains intact |
+| Device busy during unload | QEMU Linux guest | Removal fails while a descriptor is open; module remains intact |
 | Repeated load/unload | Linux test host | No stale class or `/dev` node after each cycle |
 | Partial user-copy fault | Linux fault-injection test | Short I/O or `EFAULT`; `last_error=-EFAULT` |
 | Raspberry Pi GPIO polarity | Physical Pi + meter/scope | Safe initial level and requested transitions |

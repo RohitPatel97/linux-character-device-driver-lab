@@ -9,13 +9,19 @@ Optional GPIO/I2C hooks remain disabled unless explicitly enabled.
 
 ## Project status
 
+The core memory-device project is implemented and validated in an x86_64 Linux
+VM. [October 12 CI](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/38287500842)
+passed on kernel `6.8.0-146-generic` at implementation commit `c23a68f`.
+
 | Evidence | Status |
 |---|---|
 | Portable host tests | 32 passed |
 | Compiled C/Python ABI checks | Five passed |
 | Shell checker regressions | Three passed |
 | C client, script lint, kernel compilation and `modinfo` | Passed in CI |
-| Loaded-module, faulting-page and lifecycle tests | VM validation in progress; see verification log |
+| Loaded-module integration | Eight passed in QEMU |
+| Protected-page read/write faults | Four passed; short copies preserved untouched data |
+| Lifecycle and cleanup | 25 cycles, invalid parameters, busy unload, and symlink preservation passed |
 | Physical Raspberry Pi GPIO/I2C and 32-bit compatibility execution | Not validated |
 
 [Verification evidence](docs/verification-log.md) records the tested commits,

@@ -114,7 +114,8 @@ sudo bash scripts/repeat-load-unload.sh 25
 dmesg | tail -n 100
 ```
 
-If `rmmod` reports `EBUSY`, close processes holding the device (for example,
+If `rmmod` reports that the module is in use (the recorded VM reports
+`Resource temporarily unavailable`), close processes holding the device (for example,
 inspect with `sudo lsof /dev/simple_char`) and retry. The script never forces
 removal.
 
