@@ -198,7 +198,7 @@ static ssize_t simple_char_write(struct file *file, const char __user *source,
 	available = dev->capacity - (size_t)*position;
 	requested = min(count, available);
 	/* copy_from_user zero-fills an uncopied tail; never do that to live data. */
-	/* The mutex also owns the preallocated staging buffer: no per-write allocation. */
+	/* Reuse staging memory under the mutex; no allocation in the write path. */
 	not_copied = copy_from_user(dev->write_buffer, source, requested);
 	copied = requested - not_copied;
 

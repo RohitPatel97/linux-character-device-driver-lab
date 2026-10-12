@@ -1,5 +1,6 @@
 #!/bin/sh
 # PID 1 in the disposable initramfs only; the host never executes this script.
+[ "$$" -eq 1 ] || { echo "vm-init.sh must be the guest's PID 1" >&2; exit 2; }
 export PATH=/bin:/usr/bin
 mount -t devtmpfs devtmpfs /dev
 exec </dev/console >/dev/console 2>&1

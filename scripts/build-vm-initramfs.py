@@ -43,7 +43,8 @@ def build(output: Path) -> None:
         copy(busybox, "/bin/busybox")  # CI installs busybox-static.
         applets = subprocess.check_output([str(busybox), "--list"], text=True).split()
         for applet in applets:
-            (root / "bin" / applet).symlink_to("busybox")
+            if applet != "busybox":
+                (root / "bin" / applet).symlink_to("busybox")
         (root / "usr/bin/env").symlink_to("/bin/busybox")
         elf(Path("/bin/bash"))
         elf(Path(sys.executable), "/usr/bin/python3")
