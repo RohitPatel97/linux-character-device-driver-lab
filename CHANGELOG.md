@@ -6,6 +6,21 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Runtime completion — 2026-10-12
+
+- Reuse a capacity-sized write staging buffer allocated at module load, removing
+  allocation/free operations from each write while preserving partial-copy
+  behavior. Persistent buffer memory doubles; no speedup is claimed without
+  benchmark evidence.
+- Add a disposable QEMU guest that boots the kernel matching the built module,
+  runs the eight device integration cases, four protected-page copy-fault cases,
+  both clients, invalid-parameter cleanup, busy unload, and 25 lifecycle cycles.
+- Preserve unexpected symlinks during unload, with a VM regression case.
+- Retain VM console artifacts and require a success marker plus clean kernel
+  diagnostics. Avoid duplicate CI jobs for a branch push and its pull request.
+- Reduce the README to a short project guide; preserve design, usage, and testing
+  details in dedicated documentation files.
+
 ### Changed
 
 - Shell syntax checking now invokes Bash once per file, so a malformed later
@@ -33,8 +48,8 @@ All notable changes to this project are documented here. The format follows
   errno when an all-bytes write fails after partial progress.
 - Thirteen client regression tests with injected syscall failures, short I/O,
   EOF, descriptor lifecycle errors, and concurrent positional writes.
-- Eight explicitly opted-in real Linux device integration cases. These remain
-  unrun until a loaded-module test environment is available.
+- Eight explicitly opted-in real Linux device integration cases, now executed
+  in the recorded disposable QEMU guest.
 - A README problem/solution/test matrix and updated verification evidence.
 
 ### Planned

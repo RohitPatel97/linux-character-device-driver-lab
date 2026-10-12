@@ -5,6 +5,41 @@ This is the ongoing work record for the portfolio project described in
 [`README.md`](README.md). Record completed work with commands and observed
 results before updating resume claims.
 
+## Runtime completion and optimization — 2026-10-12
+
+- **Problem:** loaded-module and actual user-copy fault behavior had never been
+  exercised. Every write allocated and freed temporary memory while holding the
+  device mutex. Unload cleanup could remove a symlink to a character device.
+- **Solution:** reuse a mutex-protected staging buffer allocated at module load;
+  preserve symlinks during unload; add a disposable QEMU Linux guest to CI with
+  matching kernel/image headers, no network or host filesystem mounts, and
+  retained console evidence. Avoid duplicate push/PR CI runs.
+- **Regression cases:** eight real-device integration cases, four protected-page
+  read/write fault cases, invalid-parameter cleanup, busy-device removal,
+  25 load/unload cycles, and unexpected-symlink preservation.
+- **Observed result:** all 40 host checks passed in CI (32 portable tests, five
+  native ABI comparisons, three shell regressions), as did kernel compilation
+  and `modinfo`. The x86_64 QEMU guest booted Linux `6.8.0-146-generic`; eight
+  device tests passed in 0.332 seconds, all four user-copy fault cases passed,
+  both clients round-tripped, and all lifecycle checks passed. Cross-page reads
+  and writes each transferred 32 bytes; fully inaccessible pages returned
+  `EFAULT` without progress. No BUG/WARNING/Oops/KASAN/panic was reported.
+- **Published implementation:**
+  [`c23a68fd4b3b753b9065f5e3880115e46146921c`](https://github.com/RohitPatel97/linux-character-device-driver-lab/commit/c23a68fd4b3b753b9065f5e3880115e46146921c);
+  [successful CI run 38287500842](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/38287500842).
+  Retained [VM console](docs/test-results/vm-tests-2026-10-12.txt) and
+  [CI excerpt](docs/test-results/ci-checks-2026-10-12.txt).
+- **Optimization tradeoff:** writes perform no heap allocation after module
+  initialization, in exchange for one additional capacity-sized buffer (4 KiB
+  by default, at most 1 MiB). No throughput improvement is claimed without a
+  benchmark.
+- **Remaining limits:** physical GPIO/I2C and 32-bit compatibility execution
+  require separate environments. Performance remains unmeasured; VM execution
+  covers one x86_64 kernel configuration. WSL is still unavailable locally.
+- **Documentation:** reduced the README from its long reference format to a
+  concise project guide, preserving design, usage, and testing details in
+  `docs/design.md`, `docs/usage.md`, and `docs/testing.md`.
+
 ## Verification tooling update — 2026-10-01
 
 - **Problem:** `bash -n` was invoked with several filenames, so Bash parsed only
@@ -53,7 +88,7 @@ results before updating resume claims.
 - Added 13 client syscall regression tests and eight separately opted-in
   Linux integration cases, plus a README problem/solution/test matrix.
 
-## Evidence and commands
+## September 4 baseline evidence and commands
 
 | Check | Command | Observed result |
 |---|---|---|
@@ -74,35 +109,36 @@ passed the C client build, 32 host tests, configured shell checks, kernel-module
 compilation, and `modinfo`. The verification log records the exact compiler and
 header versions and the historical shell-checker's coverage limit.
 
-## Next three tasks
+## Core completion and optional next validation
 
-1. On a disposable Linux VM, build for its running kernel and run the eight
-   integration cases with both hardware hooks disabled. Acceptance: all eight
-   pass, 25 load/unload cycles leave no stale resources, and removal while a
-   descriptor is open fails as busy then succeeds after closure. Retain logs,
-   kernel version, commands, and commit.
-2. Add actual Linux user-copy fault tests on the disposable VM. Acceptance:
-   faulting pages produce short I/O or `EFAULT` as appropriate, committed bytes
-   and untouched data are verified, and counters/`last_error` match the result.
-   Keep this evidence distinct from injected Python syscall responses.
-3. On a Raspberry Pi with documented wiring and an appropriate test target,
+The memory-device implementation, host verification, loaded-module integration,
+actual user-copy faults, and lifecycle acceptance criteria are complete for the
+recorded VM. Optional validation beyond that scope:
+
+1. On a Raspberry Pi with documented wiring and an appropriate test target,
    execute [`docs/hardware-bringup.md`](docs/hardware-bringup.md); record GPIO
    polarity and I2C success/NACK evidence before claiming hardware validation.
    Acceptance: board/wiring and measurement method documented, safe initial
    and cleanup levels observed, and successful transfer plus controlled adapter
    error recorded.
+2. Run a 32-bit client against a 64-bit kernel. Acceptance: ioctl payloads,
+   error propagation, and buffer I/O pass with compat mode, with compiler and
+   kernel configuration recorded.
+3. Measure write-path performance only if making performance claims. Acceptance:
+   identical hardware/kernel/workloads, before/after results, repeated trials,
+   and the persistent-memory tradeoff are recorded.
 
 ## Resume evidence boundary
 
 Supported now: C/Linux device-driver implementation, bounded I/O, mutex
 synchronization, fixed-width ioctl ABI, Python clients, injected client syscall
 failures, regression testing, concurrency tests, 32 passing portable host tests,
-five native C/Python ABI checks, three shell-checker regressions, and kernel
-compilation/metadata inspection in GitHub CI.
+five native C/Python ABI checks, three shell-checker regressions, kernel
+compilation/metadata inspection, eight loaded-device cases, four actual
+protected-page faults, and 25 lifecycle cycles in a QEMU Linux guest.
 
-Pending actual evidence: loaded-module integration, kernel user-copy fault
-injection, 32-bit compatibility execution, Raspberry Pi bring-up, GPIO signals,
-I2C bus transfers, and performance claims.
+Pending actual evidence: 32-bit compatibility execution, Raspberry Pi bring-up,
+GPIO signals, I2C bus transfers, and performance claims.
 
 Future updates must record the problem, solution, regression case, observed
 result, remaining limits, and published commit before expanding resume claims.

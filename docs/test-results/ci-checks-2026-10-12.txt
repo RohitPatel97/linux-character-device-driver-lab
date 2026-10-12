@@ -1,0 +1,19 @@
+Date: 2026-10-12 (America/Los_Angeles)
+Implementation commit: c23a68fd4b3b753b9065f5e3880115e46146921c
+CI: https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/38287500842
+Source: CI log excerpt; terminal formatting removed
+Scope: x86_64 QEMU guest, actual loaded module; no physical GPIO/I2C
+
+kernel-module-build	Compile out-of-tree module	2026-10-12T17:57:24.1102594Z   The kernel was built by: x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+kernel-module-build	Compile out-of-tree module	2026-10-12T17:57:24.1103214Z   You are using:           gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+kernel-module-build	Confirm module metadata	2026-10-12T17:57:25.8852091Z vermagic:       6.8.0-146-generic SMP preempt mod_unload modversions
+kernel-module-build	Boot disposable VM and exercise the loaded driver	2026-10-12T17:57:26.3371188Z   The kernel was built by: x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+kernel-module-build	Boot disposable VM and exercise the loaded driver	2026-10-12T17:57:26.3372116Z   You are using:           gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+kernel-module-build	Boot disposable VM and exercise the loaded driver	2026-10-12T17:57:30.8443507Z Created /home/runner/work/linux-character-device-driver-lab/linux-character-device-driver-lab/build/test-initramfs.cpio.gz (27620179 bytes)
+host-checks	Record host tool versions	2026-10-12T17:56:11.4828356Z cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+host-checks	Record host tool versions	2026-10-12T17:56:11.4842684Z Python 3.12.3
+host-checks	Record host tool versions	2026-10-12T17:56:11.4857080Z GNU bash, version 5.2.21(1)-release (x86_64-pc-linux-gnu)
+host-checks	Record host tool versions	2026-10-12T17:56:11.7479888Z version: 0.9.0
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-12T17:56:12.1731835Z Ran 32 tests in 0.008s
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-12T17:56:12.2813997Z Ran 5 tests in 0.001s
+host-checks	Build clients and run host, native ABI, and shell checks	2026-10-12T17:56:12.6360894Z Ran 3 tests in 0.032s

@@ -22,7 +22,7 @@ done
 # Remove only a stale character node with the exact expected name, and only
 # after sysfs confirms the module is gone. Regular files and symlinks are never
 # touched.
-if [[ ! -d /sys/module/simple_char && -c "${device_node}" ]]; then
+if [[ ! -d /sys/module/simple_char && ! -L "${device_node}" && -c "${device_node}" ]]; then
   rm -f -- "${device_node}"
 fi
 

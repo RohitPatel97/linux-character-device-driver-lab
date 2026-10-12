@@ -6,6 +6,47 @@ module-load or Raspberry Pi hardware validation until an actual result is
 entered below. Host tests, mocked syscalls, compilation, and physical validation
 are separate evidence categories.
 
+## 2026-10-12 completed memory-device validation
+
+| Field | Observed result |
+|---|---|
+| Published implementation | `c23a68fd4b3b753b9065f5e3880115e46146921c` |
+| CI | [Run 38287500842](https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/38287500842), both jobs passed |
+| Host checks | `make check`: 32 portable tests, five native ABI checks, and three shell regressions passed; C client/fault harness compiled; syntax checks and ShellCheck passed |
+| Host tools | GCC 13.3.0 (`13.3.0-6ubuntu2~24.04.1`), Python 3.12.3, Bash 5.2.21, ShellCheck 0.9.0 |
+| Module build | `make module KDIR=/usr/src/linux-headers-6.8.0-146-generic`; `modinfo` passed |
+| VM | Ubuntu generic kernel `6.8.0-146-generic`, QEMU x86_64 TCG, two vCPUs, 512 MiB RAM |
+| VM command | `make check-vm KDIR=/usr/src/linux-headers-6.8.0-146-generic KERNEL_IMAGE=build/vmlinuz` |
+| Device suite | All eight `tests.linux_integration` cases passed in 0.332 seconds |
+| Copy faults | All four native cases passed: full faults transferred zero bytes with `EFAULT`; cross-page reads and writes each transferred 32 bytes |
+| Lifecycle | Both clients round-tripped; invalid capacities rejected; busy removal rejected; 25 clean cycles completed; unexpected symlink preserved |
+| Kernel diagnostics | No BUG/WARNING/Oops/KASAN/panic matched the guest diagnostic check |
+| Evidence | [Complete VM console](test-results/vm-tests-2026-10-12.txt), [CI excerpt](test-results/ci-checks-2026-10-12.txt), and CI `vm-console` artifact |
+
+The driver was loaded into an actual Linux kernel running in the guest, with
+GPIO and I2C disabled. The runner did not load it into the CI host, mount host
+directories in the guest, or give the guest network access. Module/image
+versions were matched using the compiled module's `vermagic`.
+
+The C fault harness checks file-position advancement, logical size, byte and
+operation counters, `last_error=-EFAULT`, the copied prefix, and unchanged live
+data outside that prefix. These are real protected-page faults, separate from
+the Python client's injected syscall tests. The observed busy-unload message
+was `Resource temporarily unavailable`; removal succeeded after closure.
+
+Two VM setup errors were corrected before this passing run: Ubuntu's prepared
+header `kernelrelease` target returned the upstream version, so image selection
+now uses module metadata; BusyBox listed itself as an applet, so the builder
+skips creating a conflicting self-link. Neither failure was counted as runtime
+validation.
+
+The optimized write path contains no per-call allocation/free operations. It
+retains a capacity-sized staging buffer and wipes the attempted range after
+each write. This doubles persistent buffer allocation to 8 KiB by default
+(maximum 2 MiB); throughput/latency were not benchmarked. Physical GPIO/I2C,
+32-bit compatibility execution, and other kernel configurations remain outside
+the evidence here. Earlier dated records below retain their historical limits.
+
 ## Host-only tests
 
 ### 2026-10-01 validation tooling update
@@ -129,13 +170,13 @@ module, run the eight device integration cases, or validate GPIO/I2C hardware.
 
 | Field | Value |
 |---|---|
-| Date/operator | _not tested_ |
-| Machine/kernel | _not tested_ |
-| Signed module/Secure Boot state | _not tested_ |
-| Commands | `scripts/load.sh`, `scripts/smoke-test.sh`, `scripts/repeat-load-unload.sh` |
-| Expected | Device works and no stale state remains |
-| Observed | _not tested_ |
-| Sanitized log | _not tested_ |
+| Date/operator | 2026-10-12; automated GitHub Actions QEMU guest |
+| Machine/kernel | x86_64 TCG, two vCPUs, 512 MiB; `6.8.0-146-generic` |
+| Signed module/Secure Boot state | Unsigned out-of-tree module; direct kernel boot; Secure Boot not validated |
+| Commands | `scripts/load.sh`, `scripts/smoke-test.sh`, `scripts/repeat-load-unload.sh 25`, native fault tests, Python device tests |
+| Expected | Client/device tests pass; invalid/busy operations fail; no stale node/class after successful unload |
+| Observed | PASS: eight device cases, four copy-fault cases, both clients, invalid-capacity and busy-unload handling, 25 lifecycle cycles, symlink preservation |
+| Sanitized log | [VM console](test-results/vm-tests-2026-10-12.txt) |
 
 ## Raspberry Pi GPIO
 

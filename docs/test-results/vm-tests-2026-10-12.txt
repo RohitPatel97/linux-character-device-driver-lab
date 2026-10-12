@@ -1,0 +1,180 @@
+Date: 2026-10-12 (America/Los_Angeles)
+Implementation commit: c23a68fd4b3b753b9065f5e3880115e46146921c
+CI: https://github.com/RohitPatel97/linux-character-device-driver-lab/actions/runs/38287500842
+Source: downloaded vm-console artifact; line endings normalized
+Scope: x86_64 QEMU guest, actual loaded module; no physical GPIO/I2C
+
+VM kernel: 6.8.0-146-generic
+insmod: can't insert 'kernel/simple_char.ko': Invalid argument
+insmod: can't insert 'kernel/simple_char.ko': Invalid argument
+PASS: invalid module parameters leave no resources
+loaded simple_char at /dev/simple_char
+241:0
+roundtrip ok: 14 bytes
+roundtrip ok: 19 bytes
+{
+  "open_count": 3,
+  "open_handles": 1,
+  "read_ops": 2,
+  "write_ops": 2,
+  "bytes_read": 33,
+  "bytes_written": 33,
+  "data_size": 19,
+  "capacity": 16384,
+  "last_error": 0,
+  "gpio_enabled": false,
+  "gpio_value": 0,
+  "i2c_enabled": false
+}
+test_capacity_failure_preserves_written_prefix (__main__.LinuxDeviceTests.test_capacity_failure_preserves_written_prefix) ... ok
+test_clear_requires_writable_descriptor (__main__.LinuxDeviceTests.test_clear_requires_writable_descriptor) ... ok
+test_concurrent_writers_using_one_descriptor (__main__.LinuxDeviceTests.test_concurrent_writers_using_one_descriptor) ... ok
+test_hardware_hooks_are_disabled (__main__.LinuxDeviceTests.test_hardware_hooks_are_disabled) ... ok
+test_positional_io_preserves_shared_file_position (__main__.LinuxDeviceTests.test_positional_io_preserves_shared_file_position) ... ok
+test_roundtrip_and_zero_filled_gap (__main__.LinuxDeviceTests.test_roundtrip_and_zero_filled_gap) ... ok
+test_seek_outside_capacity_fails (__main__.LinuxDeviceTests.test_seek_outside_capacity_fails) ... ok
+test_stats_totals_are_coherent_during_writes (__main__.LinuxDeviceTests.test_stats_totals_are_coherent_during_writes) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.332s
+
+OK
+PASS: fully inaccessible write user-copy fault; committed=0
+PASS: cross-page write user-copy fault; committed=32
+PASS: fully inaccessible read user-copy fault; committed=0
+PASS: cross-page read user-copy fault; committed=32
+PASS: all four user-copy fault cases
+rmmod: can't unload module 'simple_char': Resource temporarily unavailable
+simple_char unloaded cleanly
+PASS: busy module remains loaded until the descriptor closes
+cycle 1/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 1/25: unload
+simple_char unloaded cleanly
+cycle 2/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 2/25: unload
+simple_char unloaded cleanly
+cycle 3/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 3/25: unload
+simple_char unloaded cleanly
+cycle 4/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 4/25: unload
+simple_char unloaded cleanly
+cycle 5/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 5/25: unload
+simple_char unloaded cleanly
+cycle 6/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 6/25: unload
+simple_char unloaded cleanly
+cycle 7/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 7/25: unload
+simple_char unloaded cleanly
+cycle 8/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 8/25: unload
+simple_char unloaded cleanly
+cycle 9/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 9/25: unload
+simple_char unloaded cleanly
+cycle 10/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 10/25: unload
+simple_char unloaded cleanly
+cycle 11/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 11/25: unload
+simple_char unloaded cleanly
+cycle 12/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 12/25: unload
+simple_char unloaded cleanly
+cycle 13/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 13/25: unload
+simple_char unloaded cleanly
+cycle 14/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 14/25: unload
+simple_char unloaded cleanly
+cycle 15/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 15/25: unload
+simple_char unloaded cleanly
+cycle 16/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 16/25: unload
+simple_char unloaded cleanly
+cycle 17/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 17/25: unload
+simple_char unloaded cleanly
+cycle 18/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 18/25: unload
+simple_char unloaded cleanly
+cycle 19/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 19/25: unload
+simple_char unloaded cleanly
+cycle 20/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 20/25: unload
+simple_char unloaded cleanly
+cycle 21/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 21/25: unload
+simple_char unloaded cleanly
+cycle 22/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 22/25: unload
+simple_char unloaded cleanly
+cycle 23/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 23/25: unload
+simple_char unloaded cleanly
+cycle 24/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 24/25: unload
+simple_char unloaded cleanly
+cycle 25/25: load
+loaded simple_char at /dev/simple_char
+241:0
+cycle 25/25: unload
+simple_char unloaded cleanly
+completed 25 clean load/unload cycles
+simple_char is not loaded
+cleanup incomplete: device state remains
+PASS: unload preserves an unexpected symlink
+SIMPLE_CHAR_VM_PASS
+[   26.530575] reboot: Power down
